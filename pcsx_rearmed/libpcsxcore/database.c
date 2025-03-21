@@ -61,8 +61,26 @@ static const char * const dualshock_timing1024_hack_db[] =
 
 static const char * const dualshock_init_analog_hack_db[] =
 {
-	/* Formula 1 Championship Edition */
-	"SLUS00546",
+	/* Crash Bandicoot 2 */
+	"SCES00967",
+	/* Croc */
+	"SLES00593",
+	/* Ghost in the shell */
+	"SCES01075",
+	/* Gold und Ruhm */
+	"SLES03185",
+	/* Maximum Force */
+	"SLES01001",
+	/* MDK */
+	"SLES00599",
+	/* Need for Speed II */
+	"SLES00658",
+	/* Need for Speed III */
+	"SLES01154",
+	/* Tiny Toon Adventures */
+	"SCES01996",
+	/* Z */
+	"SCES00602",
 };
 
 #define HACK_ENTRY(var, list) \
@@ -92,30 +110,12 @@ static const struct
 cycle_multiplier_overrides[] =
 {
 	/* note: values are = (10000 / gui_option) */
-	/* Internal Section - fussy about timings */
-	{ 202, { "SLPS01868" } },
-	/* Super Robot Taisen Alpha - on the edge with 175,
-	 * changing memcard settings is enough to break/unbreak it */
-	{ 190, { "SLPS02528", "SLPS02636" } },
-	/* Brave Fencer Musashi - cd sectors arrive too fast */
-	{ 170, { "SLUS00726", "SLPS01490" } },
-#if defined(DRC_DISABLE) || defined(LIGHTREC) /* new_dynarec has a hack for this game */
-	/* Parasite Eve II - internal timer checks */
-	{ 125, { "SLUS01042", "SLUS01055", "SLES02558", "SLES12558" } },
-#endif
-	/* Discworld Noir - audio skips if CPU runs too fast */
-	{ 222, { "SLES01549", "SLES02063", "SLES02064" } },
-	/* Digimon World */
-	{ 153, { "SLUS01032", "SLES02914" } },
-	/* Syphon Filter - reportedly hangs under unknown conditions */
-	{ 169, { "SCUS94240" } },
-	/* Psychic Detective - some weird race condition in the game's cdrom code */
-	{ 222, { "SLUS00165", "SLUS00166", "SLUS00167" } },
-	{ 222, { "SLES00070", "SLES10070", "SLES20070" } },
-	/* Vib-Ribbon - cd timing issues (PAL+ari64drc only?) */
-	{ 200, { "SCES02873" } },
-	/* Zero Divide - sometimes too fast */
-	{ 200, { "SLUS00183", "SLES00159", "SLPS00083", "SLPM80008" } },
+	/* Digimon Rumble Arena */
+	{ 280, { "SLES03841" } },
+	/* M&Ms: Shell Shocked */
+	{ 200, { "SLES04002" } },
+	/* Power Rangers: Lightspeed Rescue */
+	{ 340, { "SLES03286" } },
 };
 
 static const struct
