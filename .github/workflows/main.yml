@@ -4,24 +4,21 @@ on: [push, pull_request]
 
 jobs:
   build:
-    name: Build CubeSX/WiiSX
+    name: Build WiiSX
     runs-on: ubuntu-latest
     container: devkitpro/devkitppc:latest
 
     steps:
-    - name: Install packages
-      run: |
-        sudo dkp-pacman-key --recv-keys C8A2759C315CFBC3429CC2E422B803BA8AA3D7CE --keyserver keyserver.ubuntu.com
-        sudo dkp-pacman-key --lsign-key C8A2759C315CFBC3429CC2E422B803BA8AA3D7CE
-        sudo sed -i '/^\[dkp-libs\]$/,$d' /opt/devkitpro/pacman/etc/pacman.conf
-        sudo echo -e '[extremscorner-devkitpro]\nServer = https://packages.extremscorner.org/devkitpro/linux/$arch' >> /opt/devkitpro/pacman/etc/pacman.conf
-        sudo dkp-pacman -Sy
-        sudo dkp-pacman -S --noconfirm --ask 4 gamecube-tools-git libogc2 libogc2-cmake libogc2-libdvm ppc-zlib-ng-compat
- 
     - name: Checkout pcsxgc
       uses: actions/checkout@master
       with:
         path: pcsxgc
+
+    - name: Checkout libogc2
+      uses: actions/checkout@master
+      with:
+        repository: extremscorner/libogc2
+        path: libogc
 
     - name: add ppc gcc to PATH environment variable
       uses: myci-actions/export-env-var@1
@@ -41,18 +38,24 @@ jobs:
         name: CXXFLAGS
         value: -O3 -fipa-pta -flto -DNDEBUG
 
+    - name: Checkout libfat
+      uses: actions/checkout@main
+      with:
+        repository: extremscorner/libfat
+        path: libfat
+        
+    - name: Build libogc2
+      run: make install
+      working-directory: libogc
+      
+    - name: Build libfat
+      run: make ogc-install
+      working-directory: libfat
+      
     - name: Copy release files
       run: |
         cp -r Gamecube/release release
         cp -r Gamecube/release release_unai
-      working-directory: pcsxgc
-
-    - name: Build WiiSX (peops gfx)
-      run: |
-        mkdir build_wii
-        cmake -B build_wii -DCMAKE_BUILD_TYPE=None -DWIISX_TARGET=NintendoWii -DGPU_PLUGIN=Peops
-        cmake --build build_wii
-        mv build_wii/WiiSX.dol release/apps/wiiSX/boot.dol
       working-directory: pcsxgc
 
     - name: Build WiiSX (unai gpu)
@@ -63,29 +66,7 @@ jobs:
         mv build_wii_unai/WiiSX.dol release_unai/apps/wiiSX/boot.dol
       working-directory: pcsxgc
 
-    - name: Build CubeSX (soft gfx)
-      run: |
-        mkdir build_cube
-        cmake -B build_cube -DCMAKE_BUILD_TYPE=None -DWIISX_TARGET=NintendoGameCube -DGPU_PLUGIN=Peops
-        cmake --build build_cube
-        mv build_cube/CubeSX.dol release/CubeSX.dol
-      working-directory: pcsxgc
-
-    - name: Build CubeSX (unai gpu)
-      run: |
-        mkdir build_cube_unai
-        cmake -B build_cube_unai -DCMAKE_BUILD_TYPE=None -DWIISX_TARGET=NintendoGameCube -DGPU_PLUGIN=Unai
-        cmake --build build_cube_unai
-        mv build_cube_unai/CubeSX.dol release_unai/CubeSX.dol
-      working-directory: pcsxgc
-
-    - name: Upload soft (Peops) CubeSX/WiiSX
-      uses: actions/upload-artifact@main
-      with:
-        name: WiiSX
-        path: pcsxgc/release
-
-    - name: Upload soft (Unai) CubeSX/WiiSX
+    - name: Upload soft (Unai) WiiSX
       uses: actions/upload-artifact@main
       with:
         name: WiiSX_Unai
