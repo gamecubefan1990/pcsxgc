@@ -512,7 +512,7 @@ int loadISO(fileBrowser_file* file)
 		saveFile_init(saveFile_dir);
 		
 		sprintf(Config.Mcd1,"%s/%s.mcd",saveFile_dir,CdromId);
-		sprintf(Config.Mcd2,"%s/%s-2.mcd",saveFile_dir,CdromId);
+		sprintf(Config.Mcd2,"%s/slot2.mcd",saveFile_dir);
 		SysPrintf("Memory cards:\r\nMcd1 [%s]\r\nMcd2 [%s]\r\n", Config.Mcd1, Config.Mcd2);
 		LoadMcds(Config.Mcd1, Config.Mcd2);
 		
